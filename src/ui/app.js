@@ -116,7 +116,7 @@ export const app = {
       if (m.type === 'error') { this.rxState = 'error'; this.rxError = m.message; this.status('receiver error: ' + m.message); console.error(m.stack); w.terminate(); if (this.worker === w) this.worker = null; this.emit('rx'); }
     };
     w.onerror = e => { this.rxState = 'error'; this.rxError = e.message || 'worker failed'; this.status('receiver error: ' + this.rxError); this.emit('rx'); };
-    w.postMessage({ id, cmd: 'rx', tones: Array.from(this.tx.tones(s.cls)), wc: s.cls, scenario: s, keys, hmacKey: TEST_HMAC_KEY });
+    w.postMessage({ id, cmd: 'rx', tones: Array.from(this.tx.tones(s.cls)), wc: s.cls, scenario: s, keys, hmacKey: TEST_HMAC_KEY, idCall: this.tx.frame.src });
   },
   setTab(id) { this.canonicalTab(id); if (current && current.setTab) current.setTab(this.tab); },
   canonicalTab(id) {

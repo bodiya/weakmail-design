@@ -47,10 +47,10 @@ self.onmessage = ev => {
     if (m.cmd === 'rx') {
       const t0 = performance.now(), wc = CLASSES[m.wc], sc = m.scenario;
       post('progress', { stage: 'capture', frac: 0 });
-      const x = channelSim(Int32Array.from(m.tones), wc, { cn0: sc.cn0, offsetHz: sc.offset, driftHz: sc.drift, drift2: sc.drift2, lead: sc.lead, tail: sc.tail, seed: sc.seed });
+      const x = channelSim(Int32Array.from(m.tones), wc, { cn0: sc.cn0, offsetHz: sc.offset, driftHz: sc.drift, drift2: sc.drift2, lead: sc.lead, tail: sc.tail, seed: sc.seed, idCall: m.idCall || null });
       lastCapture = x;
       const wf = waterfall(x, FS_IQ);
-      post('capture', { capture: { n: x.n, fs: x.fs, burstStart: x.burstStart, dataStart: x.dataStart }, waterfall: wf });
+      post('capture', { capture: { n: x.n, fs: x.fs, burstStart: x.burstStart, dataStart: x.dataStart, burstEnd: x.burstEnd, keyupEnd: x.keyupEnd, idCall: m.idCall || null }, waterfall: wf });
       const pk = m.keys ? call => (m.keys[call] ? unhex(m.keys[call]) : null) : null;
       const T = receiveBurst(x, { keep: true, ldpcTrace: true, pkLookup: pk, hmacKey: m.hmacKey ? unhex(m.hmacKey) : null, progress: (stage, frac) => post('progress', { stage, frac }) });
       const out = { fail: T.fail || null, z0: T.z0, ms: 0 };

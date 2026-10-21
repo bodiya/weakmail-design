@@ -5,6 +5,7 @@
 // the carrier wherever the handheld's oscillator put it, drifting, with its comb of tone lines,
 // under white noise. The waterfall is computed in the worker (0.5 s Hann windows, max-pooled
 // to the plot), the slice under the playhead here.
+import * as cw from '../wm/cw.js';
 import { el, panel, layers, caption, tryThis, fitW, resizePlot, onPlot, isNarrow } from '../ui/controls.js';
 import { heatmap, axisX, axisY, ticks, tickCount, text, vline, hline, clear, linePlot } from '../ui/draw.js';
 import { rxPanel, fmtS, esc } from './common.js';
@@ -60,12 +61,14 @@ export default {
       heatmap(g, { data: T2.data, rows: T2.rows, cols: T2.cols, x: bx.x, y: bx.y, w: bx.w, h: bx.h, vmin: w.floor + 3, vmax: w.floor + st.range + 2, cmap: 'viridis', flipY: true });
       const s = app.scenario, X = t => bx.x + (t - w.t0 + w.dt / 2) / (w.rows * w.dt) * bx.w, Y = f => bx.y + bx.h - (f - fmin) / (fmax - fmin) * bx.h;
       const t0 = cpt.burstStart / cpt.fs, t1 = t0 + (app.tx ? app.tx.airtime(s.cls) : 0);
-      for (const t of [t0, t1]) vline(g, X(t), bx.y, bx.h, 'rgba(255,209,102,0.6)', [4, 4]);
+      const t2 = cpt.keyupEnd ? cpt.keyupEnd / cpt.fs : t1;
+      for (const t of [t0, t1, t2]) vline(g, X(t), bx.y, bx.h, 'rgba(255,209,102,0.6)', [4, 4]);
       text(g, 'key-up', X(t0) + 3, bx.y + 2, { color: '#ffd166', font: '10px system-ui' });
+      if (t2 > t1 + 1) text(g, 'CW ID', X(t1) + 3, bx.y + 2, { color: '#ffd166', font: '10px system-ui' });
       axisY(g, { x: bx.x, y: bx.y, h: bx.h, min: fmin, max: fmax, ticks: ticks(fmin, fmax, 6), fmt: v => (v / 1000).toFixed(1) + 'k' });
       axisX(g, { x: bx.x, y: bx.y + bx.h, w: bx.w, min: 0, max: w.rows * w.dt, ticks: ticks(0, dur, tickCount(bx.w, 50)), fmt: v => v + ' s' });
       const [j0, j1, j2] = besselWeights(1.5), cn0 = 10 ** (s.cn0 / 10);
-      winfo.innerHTML = `true carrier: ${s.offset.toFixed(1)} Hz${s.drift ? ` + ${s.drift} Hz/s · t` : ''} · burst ${fmtS(t1 - t0)} from ${t0.toFixed(1)} s · noise ${s.cn0 > 0 ? 'C/N0 ' + s.cn0 + ' dB-Hz' : ''} = SNR ${(s.cn0 - 34).toFixed(1)} dB in 2500 Hz`;
+      winfo.innerHTML = `true carrier: ${s.offset.toFixed(1)} Hz${s.drift ? ` + ${s.drift} Hz/s · t` : ''} · burst ${fmtS(t1 - t0)} from ${t0.toFixed(1)} s${t2 > t1 ? `, then ${cw.ID_GAP_S} s of bare carrier and the sender's CW ID "DE ${cpt.idCall}" to ${t2.toFixed(1)} s (SPEC 4.12)` : ''} · noise ${s.cn0 > 0 ? 'C/N0 ' + s.cn0 + ' dB-Hz' : ''} = SNR ${(s.cn0 - 34).toFixed(1)} dB in 2500 Hz`;
       nd.innerHTML = `At C/N0 = ${s.cn0} dB-Hz the whole signal is ${(s.cn0 - 10 * Math.log10(12500)).toFixed(1)} dB below the noise of a 12.5 kHz FM channel, which is why an FM receiver hears nothing. The receiver never looks at the channel as a whole. In one 2 Hz bin (a WEAK symbol), the carrier line has an SNR of ${(10 * Math.log10(j0 * cn0 / 2)).toFixed(1)} dB and each first-order line ${(10 * Math.log10(j1 * cn0 / 2)).toFixed(1)} dB; in an 8 Hz MOBILE bin, ${(10 * Math.log10(j0 * cn0 / 8)).toFixed(1)} and ${(10 * Math.log10(j1 * cn0 / 8)).toFixed(1)} dB. The carrier tracker adds four symbols (a 2 s window, 0.5 Hz bins: ${(10 * Math.log10(j0 * cn0 / 0.5)).toFixed(1)} dB), and the LDPC code needs only a modest fraction of symbols right. This waterfall uses 0.5 s windows, so a line here has about ${(10 * Math.log10(j0 * cn0 / 2)).toFixed(1)} dB on the carrier, and max-pooling to the screen raises the noise floor you see.`;
       void j2; lastRow = -1; tick(app.clock);
     }

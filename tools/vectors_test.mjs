@@ -15,6 +15,7 @@ import * as coded from '../src/wm/coded.js';
 import * as mfsk from '../src/wm/mfsk.js';
 import { CLASSES, TX_DELAY_S, PREAMBLE_LEN } from '../src/wm/params.js';
 import { bindingPayload } from '../src/wm/lotw.js';
+import * as cw from '../src/wm/cw.js';
 
 const QUICK = process.argv.includes('--quick');
 const dir = new URL('../data/vectors/', import.meta.url);
@@ -108,6 +109,11 @@ for (const ent of index.frames) {
 // --- LoTW binding payload (SPEC 4.10): weakmail.lotw.binding_payload("K1ABC", pk, 1739900000) ---
 ok(hex(bindingPayload('K1ABC', unhex(keys.ed25519.K1ABC.pk), 1739900000)) ===
   '574d312d4c4f545701054b3141424303a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b80000000067b4c460', 'LoTW binding payload');
+
+// --- closing CW ID (SPEC 4.12): weakmail.daemon.cw.audio("DE K1ABC", wpm=20, fs=48000, amplitude=0.3) ---
+{ const a = cw.audio('DE K1ABC'), q = Int16Array.from(a, v => Math.round(v * 32767));
+  ok(a.length === 233280 && Math.abs(cw.durationS('DE K1ABC') - 4.86) < 1e-9, 'CW ID length');
+  ok(hex(sha256(new Uint8Array(q.buffer))) === '61177c2e6e47e397201ba2639f0a68ead56d0d8374599f31c38bff6d6a5b1ddb', 'CW ID audio'); }
 
 // --- reference waveforms (SPEC 1.8) ---
 const wf = J('waveforms.json'), sv = J('frame-03-submit-ed25519.json');
