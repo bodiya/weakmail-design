@@ -55,16 +55,21 @@ export function receiveBurst(x, { fs = FS_IQ, classes = CLASS_LIST, beta = BETA,
   const tr = trackCarrier(x, WEAK, { fs, beta, keep, progress });
   T.track = tr;
   if (!tr.locked) { T.fail = 'track'; return T; }
-  const b0 = Math.round(tr.burst_start_s * fs), w = Math.round(PREAMBLE_SEARCH_S * fs), z0 = Math.max(0, b0 - w);
+  const b0 = Math.round(tr.burst_start_s * fs), w = Math.round(PREAMBLE_SEARCH_S * fs);
+  let z0 = Math.max(0, b0 - w);
   progress && progress('dechirp', 0);
-  const z = dechirp(x, tr.coeffs, fs, z0);
+  let z = dechirp(x, tr.coeffs, fs, z0);
   T.z0 = z0; T.z = z;
   progress && progress('preamble', 0);
   let ranked = rankClasses(z, { classes, beta, fs, minScore: MIN_PREAMBLE_Z, search: [0, b0 + w - z0] });
   let plaus = ranked.filter(c => c.score >= MIN_PREAMBLE_Z && c.plausible);
   T.ranked = ranked; T.searchFallback = false;
   if (!plaus.length) {
+    // fallback: the whole burst, and up to 3 search windows before the estimated start (near
+    // threshold a weak burst's start is found late, more so with bare carrier after it)
     const e1 = Math.min(x.re.length, Math.round((tr.burst_end_s + tr.window_s) * fs));
+    const z0f = Math.max(0, b0 - 3 * w);
+    if (z0f < z0) { z0 = z0f; z = dechirp(x, tr.coeffs, fs, z0); T.z0 = z0; T.z = z; }
     ranked = rankClasses(z, { classes, beta, fs, minScore: MIN_PREAMBLE_Z, search: [0, Math.max(0, e1 - z0)] });
     plaus = ranked.filter(c => c.score >= MIN_PREAMBLE_Z && c.plausible);
     T.ranked = ranked; T.searchFallback = true;

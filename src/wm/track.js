@@ -226,7 +226,9 @@ export function trackCarrier(x, wc, { fs = FS_IQ, searchHz = FREQ_SEARCH_HZ, max
   const mu0 = mean(Rm), sd0 = std(Rm) || 1;
   let exc = Float64Array.from({ length: nwin }, (_, w) => Hm[(w * nh) * nh] - mu0);
   let [a, b] = maxSubarray(exc.map(v => v - sd0));
-  let gm = 0; for (let w = a; w <= b; w++) gm += exc[w]; gm /= (b - a + 1);
+  // median, not mean: bare carrier around a burst (TX delay, the sender's CW ID gap, VOX hang) is
+  // 1/J0(beta)^2 ~ 3.8x the burst's own carrier and would cut a weak burst's start off (SPEC 1.6)
+  const gm = median(exc, a, b + 1);
   [a, b] = maxSubarray(exc.map(v => v - Math.max(0.5 * sd0, 0.5 * gm)));
   const burst = new Uint8Array(nwin); for (let w = a; w <= b; w++) burst[w] = 1;
   const wrb = Float64Array.from(rpeak, (p, w) => burst[w] ? Math.max(p - 2, 0) : 0);

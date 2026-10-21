@@ -13,6 +13,7 @@
 import * as fr from '../wm/frame.js';
 import * as coded from '../wm/coded.js';
 import * as mfsk from '../wm/mfsk.js';
+import * as cw from '../wm/cw.js';
 import { GRAY, GRAY_INV, TONES_HZ, PREAMBLE_LEN, PREAMBLE_PATTERNS, TX_DELAY_S, besselJ, CLASSES } from '../wm/params.js';
 import { fft } from '../wm/fft.js';
 import { hex, unhex } from '../wm/sha.js';
@@ -88,7 +89,7 @@ export default {
       const t = app.tx;
       if (!t) { sum.innerHTML = `<span class="pill bad">cannot encode</span> ${esc(app.txError || '')}`; return; }
       const cls = app.scenario.cls;
-      sum.innerHTML = `<b>${t.info.length}</b> information bits → class <b>n = ${t.n}</b> (k = ${t.k}, ${t.k - t.info.length} pad bits)<br>${t.n / 3} data symbols + 8 preamble<br>key-up: <b>${fmtS(t.airtime('WEAK'))}</b> WEAK, ${fmtS(t.airtime('WEAK-X'))} WEAK-X, ${fmtS(t.airtime('MOBILE'))} MOBILE<br>msg_id <code>${hex(t.msgId)}</code>` + (t.airtime(cls) > 600 ? `<br><span class="pill bad">over 10 minutes</span> in ${cls}: longer than the identification interval; see the <a href="spec.html#open">open items</a>` : '') + (t.demoKey && t.frame.tag_kind === 3 ? '<br><span class="pill">demo key</span> not a published test key' : '');
+      sum.innerHTML = `<b>${t.info.length}</b> information bits → class <b>n = ${t.n}</b> (k = ${t.k}, ${t.k - t.info.length} pad bits)<br>${t.n / 3} data symbols + 8 preamble<br>key-up with the closing CW ID: <b>${fmtS(keyup(t, 'WEAK'))}</b> WEAK, ${fmtS(keyup(t, 'WEAK-X'))} WEAK-X, ${fmtS(keyup(t, 'MOBILE'))} MOBILE<br>msg_id <code>${hex(t.msgId)}</code>` + (keyup(t, cls) > cw.MAX_KEYUP_S ? `<br><span class="pill bad">over 10 minutes</span> in ${cls}: a key-up may last at most 600 s, the ID included (<a href="spec.html#s1-6">SPEC 1.6</a>), so a station refuses this frame in ${cls}. Use a faster class or a shorter message.` : '') + (t.demoKey && t.frame.tag_kind === 3 ? '<br><span class="pill">demo key</span> not a published test key' : '');
     }
     function setView(id) {
       st.view = id; tabs.set(id);
@@ -304,7 +305,7 @@ function tonesView(root, app, cap) {
 // waveform
 // ---------------------------------------------------------------------------------------------
 function waveView(root, app, cap) {
-  const ap = panel(root, 'the HT microphone input: 0.4 of full scale, continuous phase, 10 ms ramps');
+  const ap = panel(root, 'the HT microphone input: 0.4 of full scale, continuous phase, 10 ms ramps, then the closing CW ID');
   const aw = layers(ap, fitW(ap, 1000), 170); const [awb, awo] = aw;
   const ctl = el('div'); ctl.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:6px'; ap.append(ctl);
   const playB = button(ctl, '▶ play the audio', () => app.clock.toggle());
@@ -315,31 +316,32 @@ function waveView(root, app, cap) {
   slider(bctl, { label: 'modulation index β (the spec fixes 1.5; this slider only moves this plot)', min: 0.2, max: 2.8, step: 0.05, value: st.beta, fmt: v => v.toFixed(2), oninput: v => { st.beta = v; drawRF(); } });
   const rfInfo = el('div', 'stats'); rp.append(rfInfo);
   rp.append(el('div', 'note', 'The handheld pre-emphasises its microphone audio by 6 dB per octave, so its deviation grows with the tone frequency and the modulation index β = deviation / tone frequency is the same for every tone: pre-emphasised FM is phase modulation. One tone of frequency f then puts power J₀(β)² on the carrier, J₁(β)² on each of ±f and J₂(β)² on each of ±2f. The mailbox follows the carrier and sums the four sideband lines. Because 2 × 1300 Hz exceeds 2420 Hz, no second-order line ever lands on another tone\'s first-order line. At β = 2.405 the carrier vanishes and the receiver loses its pilot.'));
-  let tones = null, wc = null, curSym = -1;
+  let tones = null, wc = null, curSym = -1, call = '', idA = null;
   function layout() { resizePlot(aw, fitW(ap, 1000), 170); resizePlot(rf, fitW(rp, 1000), isNarrow() ? 210 : 230); }
   function update() {
     layout(); const t = app.tx;
     cap.set('is audio time: play to hear the frame as the sound card sends it, and watch the waveform and the spectrum follow the current tone.', 'the comb in the spectrum: the carrier, ±f and ±2f, mirrored about the carrier. That symmetry is what the receiver\'s carrier tracker uses.');
     if (!t) return;
     wc = CLASSES[app.scenario.cls]; tones = t.tones(app.scenario.cls);
-    app.clock.setDuration(t.airtime(wc.name));
-    audInfo.textContent = `${fmtS(t.airtime(wc.name))} at 48 kHz; play uses 12 kHz, same tones`;
+    if (call !== t.frame.src) { call = t.frame.src; idA = cw.audio(`DE ${call}`, { fs: 48000 }); }
+    app.clock.setDuration(keyup(t, wc.name));
+    audInfo.textContent = `${fmtS(keyup(t, wc.name))} key-up: the ${fmtS(t.airtime(wc.name))} burst, then ${cw.ID_GAP_S} s and the CW ID "DE ${call}" (${fmtS(cw.durationS('DE ' + call))} at 20 wpm); play uses 12 kHz, same tones`;
     curSym = -1; tick(app.clock);
   }
   function drawAudio(tt) {
     clear(awb); const g = awb.g, bx = { x: L, y: T, w: awb.w - L - R, h: awb.h - T - B }, fs = 48000;
     const span = Math.min(2 * wc.symbol_s, 0.03), a = Math.max(0, tt - span / 2), b = a + span;
-    const ns = wc.samplesPerSymbol(fs), nd = Math.round(TX_DELAY_S * fs), total = tones.length * ns;
+    const ns = wc.samplesPerSymbol(fs), nd = Math.round(TX_DELAY_S * fs), total = tones.length * ns, i0 = total + Math.round(cw.ID_GAP_S * fs);
     const s0 = Math.round(a * fs) - nd, s1 = Math.round(b * fs) - nd, psi = mfsk.tonePhase(tones, wc, fs, Math.max(0, s0), Math.max(0, Math.min(total, s1)));
     const xs = [], ys = [];
-    for (let s = s0; s < s1; s++) { xs.push((s + nd) / fs); ys.push(s < 0 || s >= total ? 0 : 0.4 * Math.sin(psi[s - Math.max(0, s0)]) * mfsk.rampEnv(s, total, 480)); }
+    for (let s = s0; s < s1; s++) { xs.push((s + nd) / fs); ys.push(s < 0 ? 0 : s < total ? 0.4 * Math.sin(psi[s - Math.max(0, s0)]) * mfsk.rampEnv(s, total, 480) : s >= i0 && s - i0 < idA.length ? idA[s - i0] : 0); }
     hline(g, bx.x, bx.w, bx.y + bx.h / 2, '#2a3242');
     linePlot(g, { xs, ys, x: bx.x, y: bx.y, w: bx.w, h: bx.h, xmin: a, xmax: b, ymin: -0.5, ymax: 0.5, color: '#4ea1ff' });
     axisY(g, { x: bx.x, y: bx.y, h: bx.h, min: -0.5, max: 0.5, ticks: [-0.4, 0, 0.4] });
     axisX(g, { x: bx.x, y: bx.y + bx.h, w: bx.w, min: a, max: b, ticks: ticks(a, b, tickCount(bx.w, 70)), fmt: v => (v * 1000).toFixed(0) + ' ms' });
     for (let i = Math.ceil((a - TX_DELAY_S) / wc.symbol_s); TX_DELAY_S + i * wc.symbol_s < b; i++) { const x = bx.x + (TX_DELAY_S + i * wc.symbol_s - a) / span * bx.w; vline(g, x, bx.y, bx.h, '#ff8c42', [3, 3]); }
     const sym = Math.floor((tt - TX_DELAY_S) / wc.symbol_s);
-    text(g, tt < TX_DELAY_S ? 'TX delay: the HT is keyed, the microphone silent' : sym < tones.length ? `symbol ${sym}: tone ${tones[sym]}, ${TONES_HZ[tones[sym]]} Hz` : 'key-up ends', bx.x + 4, bx.y + 2, { color: '#e6e9ef' });
+    text(g, tt < TX_DELAY_S ? 'TX delay: the HT is keyed, the microphone silent' : sym < tones.length ? `symbol ${sym}: tone ${tones[sym]}, ${TONES_HZ[tones[sym]]} Hz` : tt < TX_DELAY_S + total / fs + cw.ID_GAP_S ? 'silence before the ID: the HT radiates bare carrier' : tt < TX_DELAY_S + i0 / fs + idA.length / fs ? `CW ID "DE ${call}", 800 Hz, 20 wpm (SPEC 4.12)` : 'key-up ends', bx.x + 4, bx.y + 2, { color: '#e6e9ef' });
   }
   function drawRF() {
     clear(rfb); if (!tones) return; const g = rfb.g, bx = { x: L, y: T, w: rfb.w - L - R, h: rfb.h - T - B };
@@ -367,7 +369,7 @@ function waveView(root, app, cap) {
   }
   function tick(c, kind) {
     if (!tones) return;
-    if (kind === 'pause') stopAudio(); else if (kind === 'play' || (c.playing && (kind === 'seek' || kind === 'speed'))) startAudio(app, tones, wc);
+    if (kind === 'pause') stopAudio(); else if (kind === 'play' || (c.playing && (kind === 'seek' || kind === 'speed'))) startAudio(app, tones, wc, call);
     playB.textContent = c.playing ? '❚❚ pause' : '▶ play the audio';
     drawAudio(c.t);
     const sym = Math.floor((c.t - TX_DELAY_S) / wc.symbol_s);
@@ -377,16 +379,20 @@ function waveView(root, app, cap) {
   return { update, tick, resize: () => { layout(); update(); } };
 }
 
+/** A sending station's key-up (SPEC 1.6, 4.12): the frame burst, then 0.5 s and "DE <src>". */
+function keyup(t, cls) { return t.airtime(cls) + cw.idSeconds(t.frame.src); }
+
 // ---- audio (12 kHz playback of the same tones) ----
 function stopAudio() { if (st.src) { try { st.src.stop(); } catch { } st.src = null; } }
-function startAudio(app, tones, wc) {
+function startAudio(app, tones, wc, call) {
   try {
     stopAudio(); const c = app.clock; if (!c.playing) return;
     if (!st.audioCtx) st.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (st.audioCtx.state !== 'running') Promise.resolve(st.audioCtx.resume()).catch(() => { });
-    const key = tones.join('') + wc.name;
+    const key = tones.join('') + wc.name + call;
     if (st.bufFor !== key) {
-      const fs = 12000, a = mfsk.audio(tones, wc, { fs }), b = st.audioCtx.createBuffer(1, a.length, fs); b.getChannelData(0).set(a); st.buf = b; st.bufFor = key;
+      const fs = 12000, a = mfsk.audio(tones, wc, { fs }), id = cw.audio(`DE ${call}`, { fs }), gap = Math.round(cw.ID_GAP_S * fs);
+      const b = st.audioCtx.createBuffer(1, a.length + gap + id.length, fs), ch = b.getChannelData(0); ch.set(a); ch.set(id, a.length + gap); st.buf = b; st.bufFor = key;
     }
     const s = st.audioCtx.createBufferSource(); s.buffer = st.buf; s.playbackRate.value = c.speed; s.connect(st.audioCtx.destination);
     s.start(0, Math.min(c.t, st.buf.duration - 0.01)); st.src = s;

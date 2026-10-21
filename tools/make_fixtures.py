@@ -31,7 +31,18 @@ SCENARIOS = [
     ("mobile-submit", "frame-01-submit-unsigned.json", "MOBILE", 25.0, 731.3, 0.8, 0.0, 2.0, 3.0, 1),
     ("mobile-ack", "frame-05-ack-mailbox.json", "MOBILE", 23.0, -1488.2, -1.6, 0.01, 3.0, 2.0, 2),
     ("weak-query", "frame-06-query.json", "WEAK", 15.5, 1203.7, -0.35, 0.002, 2.5, 4.0, 3),
+    # near threshold, with the sender's closing CW ID in the same key-up (SPEC 1.6, 4.12): the
+    # bare carrier after the burst used to move the tracked start (old tracker: 3.0 s, now 2.5 s)
+    ("weak-query-cwid", "frame-06-query.json", "WEAK", 14.5, 1203.7, -0.35, 0.002, 2.5, 3.0, 101, "W9XYZ"),
 ]
+
+
+def id_tail(call):
+    """0.5 s of bare carrier, then "DE <call>" (20 wpm, 800 Hz, drive 0.3) as the HT's phase
+    modulation (beta 1.5 per 0.4 of drive): weakmail.station's closing ID through the HT."""
+    from weakmail.daemon import cw
+    a = cw.audio(f"DE {call}", wpm=20, fs=FS_IQ, amplitude=0.3).astype(np.float64)
+    return np.concatenate([np.ones(FS_IQ // 2, complex), np.exp(1j * (1.5 / 0.4) * a)])
 
 
 def load_frame(name):
@@ -53,13 +64,15 @@ def r(x, d=6):
 
 def main():
     OUT.mkdir(exist_ok=True)
-    for name, vec, cls, cn0, off, d1, d2, lead, tail, seed in SCENARIOS:
+    for name, vec, cls, cn0, off, d1, d2, lead, tail, seed, *idc in SCENARIOS:
         wc = CLASSES[cls]
         f = load_frame(vec)
         tones = modem.frame_tones(f, wc)
 
         from weakmail import mfsk
         burst = mfsk.iq(tones, wc, tx_delay_s=0.4)
+        if idc:
+            burst = np.concatenate([burst, id_tail(idc[0])])
         x = np.zeros(int(lead * FS_IQ) + burst.size + int(tail * FS_IQ), dtype=np.complex128)
         x[int(lead * FS_IQ):int(lead * FS_IQ) + burst.size] = burst
         x = channel.freq_offset(x, off, d1, d2)
@@ -76,7 +89,7 @@ def main():
         tr = track.track_carrier(xq, CLASSES["WEAK"], FS_IQ)
         out = {"name": name, "vector": vec, "class": cls, "cn0_dbhz": cn0, "offset_hz": off,
                "drift_hz_per_s": d1, "drift2_hz_per_s2": d2, "lead_s": lead, "tail_s": tail,
-               "seed": seed, "fs": FS_IQ, "scale": scale, "n": int(xq.size),
+               "seed": seed, "id_call": idc[0] if idc else None, "fs": FS_IQ, "scale": scale, "n": int(xq.size),
                "msg_id": fr.msg_id(f).hex(), "size_class": coded.size_class(f)}
         out["track"] = {"coeffs": r(tr.coeffs, 12), "locked": bool(tr.locked), "snr_db": tr.snr_db,
                         "cn0_dbhz": tr.cn0_dbhz, "burst_start_s": tr.burst_start_s,
