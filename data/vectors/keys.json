@@ -1,0 +1,84 @@
+{
+ "format": "weakmail-test-keys",
+ "format_version": 1,
+ "warning": "PUBLIC TEST KEYS: anyone can sign with them. Never use them on air.",
+ "ed25519": {
+  "K1ABC": {
+   "seed": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+   "pk": "03a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b8",
+   "key_id": "56475aa75463474c"
+  },
+  "W9XYZ": {
+   "seed": "202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f",
+   "pk": "29acbae141bccaf0b22e1a94d34d0bc7361e526d0bfe12c89794bc9322966dd7",
+   "key_id": "24f6ed6acbfe1009"
+  },
+  "W1MBX": {
+   "seed": "404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f",
+   "pk": "2543b92ff1095511476adc8369db6ddc933665a11978dda1404ee1066ca9559d",
+   "key_id": "03396219237f75a6"
+  }
+ },
+ "hmac_key": "606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f",
+ "challenge_nonce": "0001020304050607",
+ "mailbox": "W1MBX",
+ "t0_min": 29000000,
+ "schedule": {
+  "key-k1abc": {
+   "timestamp_min": 28999997,
+   "mailbox_clock_s": 1739999850.0
+  },
+  "key-w9xyz": {
+   "timestamp_min": 28999998,
+   "mailbox_clock_s": 1739999910.0
+  },
+  "submit-unsigned": {
+   "timestamp_min": 29000000,
+   "mailbox_clock_s": 1740000030.0
+  },
+  "submit-hmac": {
+   "timestamp_min": 29000000,
+   "mailbox_clock_s": 1740000030.0
+  },
+  "submit-ed25519": {
+   "timestamp_min": 29000000,
+   "mailbox_clock_s": 1740000030.0
+  },
+  "submit-utf8-ed25519": {
+   "timestamp_min": 29000000,
+   "mailbox_clock_s": 1740000030.0
+  },
+  "ack-mailbox": {
+   "timestamp_min": 29000000,
+   "mailbox_clock_s": 1740000030.0
+  },
+  "query": {
+   "timestamp_min": 29000005,
+   "mailbox_clock_s": 1740000330.0
+  },
+  "list": {
+   "timestamp_min": 29000005,
+   "mailbox_clock_s": 1740000330.0
+  },
+  "challenge": {
+   "timestamp_min": 29000005,
+   "mailbox_clock_s": 1740000330.0
+  },
+  "response": {
+   "timestamp_min": 29000007,
+   "mailbox_clock_s": 1740000450.0
+  },
+  "deliver": {
+   "timestamp_min": 29000007,
+   "mailbox_clock_s": 1740000450.0
+  },
+  "ack-recipient": {
+   "timestamp_min": 29000009,
+   "mailbox_clock_s": 1740000570.0
+  },
+  "beacon": {
+   "timestamp_min": 29000010,
+   "mailbox_clock_s": 1740000630.0
+  }
+ }
+}

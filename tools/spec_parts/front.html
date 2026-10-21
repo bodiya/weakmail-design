@@ -1,0 +1,41 @@
+<header class="doc">
+<h1>weakmail on-air specification</h1>
+<div class="sub">Authenticated weak-signal store-and-forward data mode for VHF/UHF amateur radio · on-air format version 1 · <b>draft</b></div>
+<p class="meta">Maintainer: Brian Bodiya, KC1WIH · Normative text: <code>docs/SPEC.md</code> of the reference implementation, <a href="https://github.com/bodiya/weakmail">github.com/bodiya/weakmail</a>, commit <code>{{SPEC_COMMIT}}</code> ({{SPEC_DATE}}), SHA-256 of the source file <code>{{SPEC_SHA256}}</code> · Interactive explanation of every step: <a href="./">the weakmail pages</a></p>
+</header>
+
+<h2 id="about"><a class="anc" href="#about">§</a>About this publication</h2>
+<p>This document publishes the complete technical characteristics of weakmail, so that anyone can build a transmitter, receiver or monitor for it from this text alone. It defines, normatively, the modulation (tones, symbol timing, modulation index, preambles), the frame format and every encoding used in it, the error-correcting code including the construction of its parity-check matrices and interleavers, the authentication tags, the mailbox protocol and the downlink waveforms, and it gives test vectors that pin every one of them to exact bits.</p>
+<p>It is published before any on-air use, as the public documentation of the technique that 47 CFR §97.309(a)(4) refers to and that §97.309(b) and §97.113(a)(4) presuppose: a code anyone can decode does not obscure the meaning of a message. <b>Nothing in weakmail is encrypted.</b> Every header, every message body and every protocol field is sent in the clear in an encoding defined here; cryptography is used only to authenticate (Ed25519 signatures and HMAC tags appended to plain text) and to gate which station may ask a mailbox to retransmit a stored message. Anyone who receives a weakmail transmission can read it.</p>
+<p>The sections numbered 0 to 7 and Appendix A are the specification itself, reproduced from the reference implementation's <code>docs/SPEC.md</code> with no change to the text. Where they name a file (<code>weakmail/params.py</code>, <code>tests/...</code>) it is a file of that reference implementation. Sections marked <i>informative</i> describe the reference receiver and its measured performance; a conforming receiver may work differently. The summary below and appendices E, R and V were added for this publication; their numbers are computed from the reference implementation's constants by <code>tools/build_spec.py</code>.</p>
+<div class="note"><b>Status.</b> Draft v1. The format is complete and implemented, and has been tested against simulated signals only; it is not yet in use on the air. Any change to what is transmitted will be published here, with a new version number, before it is used.</div>
+<div class="note" id="open"><b>Open items in this draft</b>, to be settled before the affected parts are used on the air:
+<ul>
+<li><b>Key-ups longer than 10 minutes.</b> A single frame can take longer than the 10-minute identification interval of §97.119(a): {{LONG_KEYUPS}}. The callsign in such a frame's header cannot be decoded until the frame ends, and v1 defines no identification inside a burst. Until it does, a station should not send frames whose key-up exceeds 10 minutes.</li>
+<li><b>Identification of sending stations.</b> Every frame carries the sender's callsign (2.3), and mailboxes also identify in CW (4.12). Whether the header alone satisfies §97.119(b) for a handheld is discussed in Appendix R; a sending station can close each transmission with a CW or voice identification.</li>
+<li><b>BEACON waveform (1.4).</b> The on-off-keyed carrier is defined as a waveform only: its bit content, framing and identification are not specified. It is used for hardware tests and must not be used on the air as a weakmail transmission until specified. (The BEACON <i>frame type</i> of 4.13 is a normal frame and is fully specified.)</li>
+</ul></div>
+<p>Anyone may implement this specification. The reference implementation (Python) and these pages (JavaScript, including a port of the encoder and receiver checked bit for bit against the reference) are free software under the GNU General Public License, version 3 or later.</p>
+
+<h2 id="summary"><a class="anc" href="#summary">§</a>Summary of technical characteristics</h2>
+<table>
+<tr><th>item</th><th>value</th><th>section</th></tr>
+<tr><td>intended bands</td><td>2 m and 70 cm (data emissions; standard 12.5 or 25 kHz FM channel centres)</td><td>1.7, R</td></tr>
+<tr><td>uplink emission</td><td>8-tone MFSK audio (1300–2420 Hz, 160 Hz spacing) applied to the microphone input of an FM transceiver with standard 6 dB/octave pre-emphasis, giving phase modulation with index β = {{BETA}}; emission class F2D</td><td>1.1, 1.2, E</td></tr>
+<tr><td>symbol rates</td><td>WEAK 2 Bd · WEAK-X 1 Bd · MOBILE 8 Bd (3 bits per symbol: 6, 3, 24 bit/s)</td><td>1.4</td></tr>
+<tr><td>peak deviation</td><td>{{DEV_MIN}} Hz (lowest tone) to {{DEV_MAX}} Hz (highest tone)</td><td>1.2, E</td></tr>
+<tr><td>bandwidth</td><td>99 % of the power within ±2·f<sub>k</sub> of the carrier: at most {{OBW_MAX}} kHz occupied; necessary bandwidth {{BN}} kHz by 47 CFR §2.202 (designator <b>{{BN_DESIG}}F2D</b>)</td><td>E</td></tr>
+<tr><td>synchronisation</td><td>none to a clock: each burst starts with an 8-symbol preamble whose pattern names the class</td><td>1.5, 1.6</td></tr>
+<tr><td>keying</td><td>{{TX_DELAY}} s TX delay, {{PREAMBLE_LEN}} preamble symbols, then n/3 data symbols; one frame per key-up</td><td>1.6</td></tr>
+<tr><td>frame</td><td>92-bit header (version, type, tag kind, source and destination callsigns, timestamp, flags, length), body (6-bit text, UTF-8 or binary), CRC-16, optional tag</td><td>2</td></tr>
+<tr><td>character encodings</td><td>callsigns: FT8 "c28" packing; text: a published 64-character 6-bit alphabet, or UTF-8</td><td>2.3, 2.4</td></tr>
+<tr><td>error correction</td><td>rate-½ (3,6)-regular LDPC code, 13 published lengths from 216 to 5322 bits, deterministic construction and interleaver (Appendix A)</td><td>3, A</td></tr>
+<tr><td>authentication</td><td>none, HMAC-SHA256 truncated to 64 bits, or Ed25519 (RFC 8032) over published canonical bytes; no encryption of any kind</td><td>0, 5</td></tr>
+<tr><td>station identification</td><td>the source callsign is in every frame header; mailboxes also identify in CW (≤ 20 wpm) at least every 10 minutes</td><td>2.3, 4.12, R</td></tr>
+<tr><td>downlink (mailbox → HT)</td><td>Bell 202 AFSK at 1200 Bd in AX.25 UI frames (default), or the uplink MFSK burst</td><td>7</td></tr>
+<tr><td>other waveforms</td><td>BEACON: on-off keying of the bare carrier at 1 Bd</td><td>1.4</td></tr>
+</table>
+<table>
+<tr><th>class</th><th>symbol</th><th>symbol rate</th><th>coded bit rate</th><th>key-up, 32-char unsigned (n = 600)</th><th>32-char Ed25519 (n = 1626)</th><th>largest frame (n = 5322)</th></tr>
+{{CLASS_ROWS}}
+</table>

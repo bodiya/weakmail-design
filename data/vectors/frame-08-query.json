@@ -1,0 +1,69 @@
+{
+ "format": "weakmail-test-vector",
+ "format_version": 1,
+ "name": "query",
+ "description": "QUERY W9XYZ -> W1MBX (empty body, unsigned; smallest class 216)",
+ "frame": {
+  "version": 1,
+  "type": "QUERY",
+  "type_code": 2,
+  "tag_kind": "NONE",
+  "tag_kind_code": 0,
+  "src": "W9XYZ",
+  "src_c28": 12751800,
+  "dst": "W1MBX",
+  "dst_c28": 12585694,
+  "timestamp_min": 33093,
+  "relayed": false,
+  "more_follows": false,
+  "body_kind": "BINARY",
+  "body_len": 0,
+  "body": "",
+  "body_encoding": "hex"
+ },
+ "body_fields": {},
+ "auth": {
+  "kind": "none"
+ },
+ "canonical_bytes": "574d31480c293b80c00ade81452000",
+ "tag": "",
+ "msg_id": "5ccaa0371a035c98",
+ "crc16": "f389",
+ "info_bits": {
+  "length": 108,
+  "hex": "480c293b80c00ade8145200f3890"
+ },
+ "size_class": {
+  "n": 216,
+  "k": 108,
+  "pad_bits": 0
+ },
+ "coded_bits": {
+  "length": 216,
+  "hex": "4fcbcfd33789312149b14b56b5fa8b2098696e8a5b06419447c5b1",
+  "sha256": "2db2b9cc722bdc35c1d397bfa89c3aca5c733e4fcdb841e56bde9eb14803220a"
+ },
+ "tones": {
+  "WEAK": {
+   "symbol_s": 0.5,
+   "preamble": "05274163",
+   "n_symbols": 80,
+   "airtime_s": 40.4,
+   "sequence": "05274163325765154742241117330611673766346625631210117161226061220177043731573441"
+  },
+  "WEAK-X": {
+   "symbol_s": 1.0,
+   "preamble": "36147250",
+   "n_symbols": 80,
+   "airtime_s": 80.4,
+   "sequence": "36147250325765154742241117330611673766346625631210117161226061220177043731573441"
+  },
+  "MOBILE": {
+   "symbol_s": 0.125,
+   "preamble": "72413605",
+   "n_symbols": 80,
+   "airtime_s": 10.4,
+   "sequence": "72413605325765154742241117330611673766346625631210117161226061220177043731573441"
+  }
+ }
+}

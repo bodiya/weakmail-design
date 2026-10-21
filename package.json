@@ -1,0 +1,14 @@
+{
+  "name": "weakmail-design",
+  "version": "0.1.0",
+  "description": "The weakmail on-air protocol, published and visualized: specification, encoder and decoder",
+  "type": "module",
+  "author": "Brian Bodiya KC1WIH",
+  "license": "GPL-3.0-or-later",
+  "repository": "github:bodiya/weakmail-design",
+  "scripts": {
+    "start": "python3 -m http.server 8765",
+    "stop": "pkill -f '[h]ttp.server 8765' || true",
+    "test": "node tools/vectors_test.mjs && node tools/afsk_test.mjs && node tools/rx_test.mjs"
+  }
+}

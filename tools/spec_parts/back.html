@@ -1,0 +1,59 @@
+<h2 id="emission"><a class="anc" href="#emission">§</a>Appendix E. Emission characteristics<span class="tag">informative</span></h2>
+<p>Computed from the normative parameters of section 1 (tones f<sub>k</sub> = 1300 + 160 k Hz, modulation index β = {{BETA}}) for an ideal transmitter, that is, the reference IQ model of section 1.8. A real handheld adds its own pre-emphasis error, limiter and audio filtering; test E2 of the reference implementation calibrates the drive level so that β stays at its nominal value.</p>
+<h3 id="e1"><a class="anc" href="#e1">§</a>E.1 Line spectrum of one symbol</h3>
+<p>A symbol on tone k radiates lines at the carrier, ±f<sub>k</sub>, ±2f<sub>k</sub>, ±3f<sub>k</sub>, … with power fractions J<sub>n</sub>(β)²:</p>
+<table>
+<tr><th>line</th><th>power fraction at β = {{BETA}}</th></tr>
+<tr><td>carrier (n = 0)</td><td>{{J0}} %</td></tr>
+<tr><td>±f<sub>k</sub> (n = ±1), each</td><td>{{J1}} %</td></tr>
+<tr><td>±2f<sub>k</sub> (n = ±2), each</td><td>{{J2}} %</td></tr>
+<tr><td>±3f<sub>k</sub> (n = ±3), each</td><td>{{J3}} %</td></tr>
+<tr><td>within ±2f<sub>k</sub></td><td>{{P2}} %</td></tr>
+</table>
+<p>The data symbols are continuous in phase and the tone changes only at symbol boundaries 0.125 s or more apart, so the spectrum of a whole burst is the line spectrum above, averaged over the tones in use, with very little added by the transitions.</p>
+<h3 id="e2"><a class="anc" href="#e2">§</a>E.2 Per tone</h3>
+<table>
+<tr><th>tone k</th><th>f<sub>k</sub> (Hz)</th><th>peak deviation β·f<sub>k</sub> (Hz)</th><th>99 % occupied bandwidth 4·f<sub>k</sub> (kHz)</th><th>Carson's rule 2(β+1)·f<sub>k</sub> (kHz)</th></tr>
+{{TONE_ROWS}}
+</table>
+<p>Measured on the reference waveform of the signed 32-character frame (Welch spectrum, 1 Hz resolution, all symbols): 99 % of the power lies within {{OBW_MEAS}} of the carrier for every class.</p>
+<h3 id="e3"><a class="anc" href="#e3">§</a>E.3 Necessary bandwidth and emission designator</h3>
+<p>By 47 CFR §2.202(g) for frequency modulation, B<sub>n</sub> = 2M + 2DK with M = 2420 Hz (the highest tone), D = {{DEV_MAX}} Hz (its peak deviation) and K = 1: B<sub>n</sub> = {{BN}} kHz, emission designator <b>{{BN_DESIG}}F2D</b> (F: frequency modulation; 2: a single channel containing quantised information with a modulating subcarrier, the audio tones; D: data). The occupied bandwidth is smaller, {{OBW_MAX}} kHz at most (E.2), and both fit a standard 12.5 kHz FM channel. The handheld's frequency tolerance (about ±2.5 ppm, ±1.1 kHz at 440 MHz) moves the whole emission; the receiver searches ±2.5 kHz (section 1.7).</p>
+<table>
+<tr><th>waveform</th><th>emission class</th><th>symbol rate</th><th>notes</th></tr>
+<tr><td>MFSK uplink (WEAK, WEAK-X, MOBILE)</td><td>F2D</td><td>2, 1, 8 Bd</td><td>B<sub>n</sub> {{BN}} kHz, as above</td></tr>
+<tr><td>MFSK downlink (7.3)</td><td>F2D</td><td>8 Bd (MOBILE) or 2 Bd (WEAK)</td><td>the same waveform from the mailbox's FM transmitter, at flat drive</td></tr>
+<tr><td>AFSK1200 downlink (7.2)</td><td>F2D</td><td>1200 Bd</td><td>standard Bell 202 packet radio; bandwidth set by the mailbox transmitter's deviation as for any 1200 Bd packet station</td></tr>
+<tr><td>BEACON (1.4)</td><td>A1D</td><td>1 Bd</td><td>on-off keying of the unmodulated carrier, 50 ms raised-cosine edges</td></tr>
+<tr><td>mailbox station identification (4.12)</td><td>F2A</td><td>≤ 20 wpm</td><td>800 Hz keyed tone in the FM transmitter's audio (reference implementation)</td></tr>
+</table>
+
+<h2 id="regulatory"><a class="anc" href="#regulatory">§</a>Appendix R. Regulatory notes, United States<span class="tag">informative</span></h2>
+<p>How the design meets the rules of 47 CFR Part 97 that apply to a new data mode, as the designer reads them. This is not legal advice: the control operator of every station remains responsible for its transmissions, and rules differ outside the United States.</p>
+<table>
+<tr><th>rule</th><th>requirement</th><th>how weakmail meets it</th></tr>
+<tr><td>§97.113(a)(4)</td><td>no messages encoded for the purpose of obscuring their meaning</td><td>no encryption anywhere (section 0); every encoding is published here; signatures and HMAC tags are appended to plain text and hide nothing; retrieval is gated by a signed nonce (access control), never by hiding content; no hash-only commitments of content; a SUBMIT body may not be binary (2.4)</td></tr>
+<tr><td>§97.309(a)(4), §97.309(b)</td><td>a digital code or technique whose technical characteristics are documented publicly; unspecified codes allowed where §97.307(f) permits, not to obscure meaning</td><td>this document, the published reference implementation and its test vectors, all public before any on-air use</td></tr>
+<tr><td>§97.305(c), §97.307(f)(5), (f)(6)</td><td>data emissions on 2 m: symbol rate ≤ 19.6 kBd, bandwidth ≤ 20 kHz; on 1.25 m and 70 cm: ≤ 56 kBd, ≤ 100 kHz</td><td>at most 8 Bd for MFSK and 1200 Bd for the AFSK downlink; necessary bandwidth {{BN}} kHz (Appendix E); intended for the data portions of 2 m and 70 cm. (The FCC has proposed replacing these VHF/UHF symbol-rate limits with bandwidth limits, in the further notice accompanying FCC 23-93; weakmail is far inside either form of the rule.)</td></tr>
+<tr><td>§97.119</td><td>station identification at least every 10 minutes and at the end of a communication, by CW, phone, or a specified digital code</td><td>every frame carries the sender's callsign in a published encoding (2.3); the mailbox sends a CW identification at ≤ 20 wpm at least every 10 minutes (4.12) and its AX.25 downlink frames carry its callsign in ASCII (7.2). §97.119(b)(3) allows identification by a data emission using a "specified digital code"; whether the c28 encoding of this published specification is one, under §97.309(a)(4), is the operator's judgement, and a sending station can always close its transmissions with a CW or voice identification. A single key-up must not run past the 10-minute interval without identification: see the open items at the start of this document for the frame lengths affected.</td></tr>
+<tr><td>§97.109(d), §97.221(b)</td><td>automatic control of a station transmitting data, on 6 m and shorter</td><td>mailboxes operate on 2 m or 70 cm only, log every frame they receive and send, and have a remote kill switch (4.11)</td></tr>
+<tr><td>§97.219</td><td>message forwarding: the first forwarding station must authenticate the originator or accept accountability</td><td>a mailbox checks the originator's signature before storing, rejects bad signatures, records whether each message was verified, and logs every frame (4.2, 4.11). Only verified messages are ever relayed to another mailbox (4.9). A mailbox can be configured to store verified messages only; one that also stores and delivers unverified messages does so under its control operator's accountability, with the content log and the remote purge and halt commands (4.11) as the means to exercise it.</td></tr>
+<tr><td>§97.113(d)</td><td>only repeater, auxiliary and space stations may automatically retransmit other stations' signals</td><td>relaying is message forwarding: decode, verify, store, re-originate under the relaying station's own callsign (4.9), never retransmission of the signal; it is off by default</td></tr>
+</table>
+<p>The BEACON frame type (4.13), a list of callsigns a mailbox has heard, is a transmission of an automatically controlled digital station (§97.221), not a beacon station in the sense of §97.3(a)(9) and §97.203.</p>
+<p>Elsewhere: Canada's RBR-4 permits published, non-secret codes; administrations following ITU Radio Regulations No. 25.2A permit authentication but not confidentiality. Rules for unattended stations vary and must be checked for each administration.</p>
+
+<h2 id="vectors"><a class="anc" href="#vectors">§</a>Appendix V. Published test vectors</h2>
+<p>The reference implementation's test vectors are republished here, unchanged, under <a href="data/vectors/README.md">data/vectors/</a> (format: <a href="data/vectors/README.md">README.md</a>). They follow one mailbox session through every frame type, each through the whole transmit chain: field values, canonical bytes, tag, msg_id, CRC, information bits, coded bits and the tone sequence in every class, plus reference waveform windows. Every one of them is reproduced exactly by the JavaScript encoder of these pages (<code>tools/vectors_test.mjs</code>), and the SHA-256 digests below are those recorded in <code>index.json</code>.</p>
+<table>
+<tr><th>file</th><th>SHA-256</th></tr>
+{{VEC_ROWS}}
+</table>
+<p>The test keys in <code>keys.json</code> are public. Anyone can sign with them; no station may use them on the air.</p>
+
+<h2 id="history"><a class="anc" href="#history">§</a>Document history</h2>
+<table>
+<tr><th>date</th><th>change</th></tr>
+<tr><td>{{SPEC_DATE}}</td><td>Draft v1 (on-air format version 1) first published here, from reference implementation commit <code>{{SPEC_COMMIT}}</code>.</td></tr>
+</table>
+<p class="meta">Built by <code>tools/build_spec.py</code> of <a href="https://github.com/bodiya/weakmail-design">weakmail-design</a>. Licensed under the GNU GPL, version 3 or later.</p>

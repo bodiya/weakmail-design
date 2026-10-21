@@ -1,0 +1,13 @@
+# Cache rules for Netlify and Cloudflare Pages (ignored by GitHub Pages). The code and the
+# specification are served fresh so a redeploy is picked up without a hard refresh.
+/data/*
+  Cache-Control: public, max-age=86400
+
+/src/*
+  Cache-Control: public, max-age=0, must-revalidate
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/spec.html
+  Cache-Control: public, max-age=0, must-revalidate
