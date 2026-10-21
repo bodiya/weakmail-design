@@ -24,7 +24,7 @@ import { TEST_KEYS, TEST_HMAC_KEY } from '../ui/app.js';
 const VIEWS = [['frame', 'the frame'], ['code', 'the code'], ['tones', 'tones'], ['waveform', 'waveform']];
 const FIELD_INFO = {
   version: 'always 1 for this specification; other values are rejected',
-  type: 'frame type: SUBMIT ACK QUERY LIST CHALLENGE RESPONSE DELIVER KEY BEACON SIG (0-9)',
+  type: 'frame type: SUBMIT ACK QUERY LIST CHALLENGE RESPONSE DELIVER, 7 reserved (was KEY), BEACON SIG (0-9)',
   tag_kind: '0 none, 1 HMAC-SHA256/64, 2 BLS12-381 (reserved), 3 Ed25519',
   src: 'source callsign, FT8 c28 packing; must be a station callsign',
   dst: 'destination: a callsign, or ANY (c28 token 2), DE, QRZ',
@@ -62,7 +62,7 @@ export default {
 
     // ---- the message ----
     const m = app.msg;
-    const typeS = select(ctl, { label: 'frame type', options: fr.TYPES.map(t => [t, t]), value: m.type, onchange: v => app.setMsg({ type: v }) });
+    const typeS = select(ctl, { label: 'frame type', options: fr.TYPES.map(t => [t, t === 'KEY' ? 'KEY (7, retired: never sent)' : t]), value: m.type, onchange: v => app.setMsg({ type: v }) });
     const srcI = textInput(ctl, { label: 'source callsign', value: m.src, oninput: v => setSoon({ src: v.toUpperCase() }) });
     const dstI = textInput(ctl, { label: 'destination (callsign, ANY, DE, QRZ)', value: m.dst, oninput: v => setSoon({ dst: v.toUpperCase() }) });
     const bw = el('div', 'ctl'); bw.append(el('div', 'lab', 'body'));

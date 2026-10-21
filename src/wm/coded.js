@@ -18,7 +18,7 @@ export const SIZE_CLASS_NOTES = {
   996: '65-char 6-bit, unsigned (498): geometric filler',
   1368: '32-char 6-bit + BLS12-381 (684); RESPONSE body (684); 8-byte body + Ed25519 (684)',
   1626: '32-char 6-bit SUBMIT + Ed25519 (812): the signed baseline',
-  1752: 'KEY: 32-byte public key + Ed25519 self-signature (876)',
+  1752: '32-byte body + Ed25519 (876); sized for the retired KEY frame',
   2394: '96-char 6-bit + Ed25519 (1196): geometric filler',
   3276: '255-char 6-bit, unsigned (1638)',
   4302: '255-char 6-bit + Ed25519 (2150); 255-byte UTF-8, unsigned (2148)',

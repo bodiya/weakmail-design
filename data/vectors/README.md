@@ -38,15 +38,16 @@ real station.**
 the **16-bit header field** (SPEC 2.1). In `keys.json`, `t0_min` and
 `schedule.<frame>.timestamp_min` are the **full** minute count since the Unix epoch (e.g.
 29000000), and the frame's header field is that count mod 2^16 (29000000 mod 65536 =
-33088 in `frame-05`). `schedule.<frame>.mailbox_clock_s` is the mailbox's clock (Unix
+33088 in `frame-03`). `schedule.<frame>.mailbox_clock_s` is the mailbox's clock (Unix
 seconds) when that frame is handled, `(full minutes) · 60 + 30`. A mailbox rebuilds the full
 count from the field with its clock (SPEC 4.2 step 2), which is what the replay and
 timestamp-window checks use.
 
 ## Frames
 
-The vectors follow one complete mailbox session. K1ABC (originator) and W9XYZ (recipient)
-announce their keys. K1ABC submits the SPEC section 6 message to mailbox W1MBX, unsigned,
+The vectors follow one complete mailbox session. The mailbox holds LoTW key bindings (SPEC
+4.10) of K1ABC (originator), W9XYZ (recipient) and itself; bindings travel off air, so they
+are not frame vectors. K1ABC submits the SPEC section 6 message to mailbox W1MBX, unsigned,
 HMAC-tagged and Ed25519-signed, plus a UTF-8 variant. The mailbox ACKs. W9XYZ queries and gets
 a LIST and a CHALLENGE. It answers with a RESPONSE, receives the DELIVER (the original
 signed blob, byte for byte) and sends a signed delivery ACK. The mailbox then sends a BEACON.
@@ -54,8 +55,8 @@ Mailbox-originated frames are Ed25519-signed with the mailbox key, as
 `weakmail.mailbox.protocol.Mailbox` does when it has a key. The test suite replays the session
 through a real `Mailbox` and checks that it emits exactly these frames.
 
-Every frame type (SUBMIT, ACK, QUERY, LIST, CHALLENGE, RESPONSE, DELIVER, KEY, BEACON)
-appears at least once.
+Every frame type a station or mailbox sends (SUBMIT, ACK, QUERY, LIST, CHALLENGE, RESPONSE,
+DELIVER, BEACON) appears at least once; KEY is retired (SPEC 4.8).
 
 ## Frame vector layout
 

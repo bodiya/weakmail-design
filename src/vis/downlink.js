@@ -13,7 +13,7 @@ import * as coded from '../wm/coded.js';
 import * as ak from '../wm/afsk1200.js';
 import { unhex, hex } from '../wm/sha.js';
 
-const st = { unsubs: [], pick: 'frame-07-ack-mailbox.json', audioCtx: null, src: null, buf: null, bufFor: null };
+const st = { unsubs: [], pick: 'frame-05-ack-mailbox.json', audioCtx: null, src: null, buf: null, bufFor: null };
 let tok = 0;
 const SEG = [['dst', '#3ddc97', 'destination address'], ['src', '#4ea1ff', 'source address'], ['ctl', '#ffd166', 'control 0x03 (UI)'], ['pid', '#ff8c42', 'PID 0xF0 (no layer 3)'], ['info', '#e6e9ef', 'info: the weakmail blob'], ['fcs', '#c792ea', 'FCS, CRC-16/X.25']];
 
@@ -27,7 +27,7 @@ export default {
     const main = el('div', 'stagemain'); row.append(main);
     const cap = caption(main);
     cap.set('is audio time: the cursor walks through the transmission bit by bit; press play to hear it.', 'the 24 flags at the start (the receiver\'s clock and slicer settle on them), the stuffed zeros after every five ones, and that a 0 bit is a change of tone.');
-    const vecs = ['frame-07-ack-mailbox.json', 'frame-09-list.json', 'frame-10-challenge.json', 'frame-12-deliver.json', 'frame-14-beacon.json'];
+    const vecs = ['frame-05-ack-mailbox.json', 'frame-07-list.json', 'frame-08-challenge.json', 'frame-10-deliver.json', 'frame-12-beacon.json'];
     select(ctl, { label: 'mailbox frame (from the test vectors)', options: vecs.map(v => [v, v.replace(/^frame-\d+-|\.json$/g, '')]), value: st.pick, onchange: v => { st.pick = v; load(); } });
     const pb = button(ctl, '▶ play', () => app.clock.toggle()); pb.style.alignSelf = 'flex-start';
     const sum = el('div', 'stats'); ctl.append(sum);

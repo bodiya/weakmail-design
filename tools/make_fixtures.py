@@ -28,9 +28,9 @@ KEYS = json.loads((VEC / "keys.json").read_text())
 
 SCENARIOS = [
     # name, vector frame, class, C/N0, offset, drift, drift2, lead s, tail s, seed
-    ("mobile-submit", "frame-03-submit-unsigned.json", "MOBILE", 25.0, 731.3, 0.8, 0.0, 2.0, 3.0, 1),
-    ("mobile-ack", "frame-07-ack-mailbox.json", "MOBILE", 23.0, -1488.2, -1.6, 0.01, 3.0, 2.0, 2),
-    ("weak-query", "frame-08-query.json", "WEAK", 15.5, 1203.7, -0.35, 0.002, 2.5, 4.0, 3),
+    ("mobile-submit", "frame-01-submit-unsigned.json", "MOBILE", 25.0, 731.3, 0.8, 0.0, 2.0, 3.0, 1),
+    ("mobile-ack", "frame-05-ack-mailbox.json", "MOBILE", 23.0, -1488.2, -1.6, 0.01, 3.0, 2.0, 2),
+    ("weak-query", "frame-06-query.json", "WEAK", 15.5, 1203.7, -0.35, 0.002, 2.5, 4.0, 3),
 ]
 
 
