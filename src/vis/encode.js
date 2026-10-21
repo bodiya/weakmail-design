@@ -34,7 +34,7 @@ const FIELD_INFO = {
 };
 const PRESETS = [
   { label: 'the spec test vector', see: 'SPEC section 6: SUBMIT K1ABC → W9XYZ, a 32-character 6-bit body, timestamp field 33088. <b>300 information bits</b>, class n = 600, msg_id <code>dd8e10c136d0f10f</code>, exactly the published vector.', m: { type: 'SUBMIT', src: 'K1ABC', dst: 'W9XYZ', body: 'MEET AT THE REPEATER 1800 LOCAL.', bodyKind: 'auto', tag: 'none', ts: 33088, more: false } },
-  { label: 'sign it (Ed25519)', see: 'The same frame with a 512-bit Ed25519 tag over its canonical bytes, made with the published test key of K1ABC. <b>812 bits</b>, class 1626, and 2.6 times the airtime. The signature authenticates the sender; it hides nothing.', m: { tag: 'ed25519' } },
+  { label: 'sign it (Ed25519)', see: 'The same frame with a 512-bit Ed25519 tag over its canonical bytes, made with the published test key of K1ABC. <b>812 bits</b>, class 1626, and about 2.6 times the key-up time. The signature authenticates the sender; it hides nothing.', m: { tag: 'ed25519' } },
   { label: 'HMAC instead', see: 'A 64-bit HMAC-SHA256 tag with a pre-shared group key: 364 bits, class 732. Cheaper on air, but only key holders can check it.', m: { tag: 'hmac' } },
   { label: 'lower case and an emoji', see: 'Characters outside the 64-character alphabet switch the body to UTF-8: 8 bits per byte instead of 6 per character.', m: { body: 'Meet at the repeater 🙂', bodyKind: 'auto', tag: 'none' } },
   { label: 'a QUERY', see: 'The smallest frame: QUERY W9XYZ → W1MBX, empty body, no tag. 108 information bits, class 216.', m: { type: 'QUERY', src: 'W9XYZ', dst: 'W1MBX', body: '', bodyKind: 'auto', tag: 'none', ts: 33093 } },
@@ -88,8 +88,7 @@ export default {
       const t = app.tx;
       if (!t) { sum.innerHTML = `<span class="pill bad">cannot encode</span> ${esc(app.txError || '')}`; return; }
       const cls = app.scenario.cls;
-      sum.innerHTML = `<b>${t.info.length}</b> information bits → class <b>n = ${t.n}</b> (k = ${t.k}, ${t.k - t.info.length} pad bits)<br>${t.n / 3} data symbols + 8 preamble<br>key-up: <b>${fmtS(t.airtime('WEAK'))}</b> WEAK, ${fmtS(t.airtime('WEAK-X'))} WEAK-X, ${fmtS(t.airtime('MOBILE'))} MOBILE<br>msg_id <code>${hex(t.msgId)}</code>` + (t.demoKey && t.frame.tag_kind === 3 ? '<br><span class="pill">demo key</span> not a published test key' : '');
-      void cls;
+      sum.innerHTML = `<b>${t.info.length}</b> information bits → class <b>n = ${t.n}</b> (k = ${t.k}, ${t.k - t.info.length} pad bits)<br>${t.n / 3} data symbols + 8 preamble<br>key-up: <b>${fmtS(t.airtime('WEAK'))}</b> WEAK, ${fmtS(t.airtime('WEAK-X'))} WEAK-X, ${fmtS(t.airtime('MOBILE'))} MOBILE<br>msg_id <code>${hex(t.msgId)}</code>` + (t.airtime(cls) > 600 ? `<br><span class="pill bad">over 10 minutes</span> in ${cls}: longer than the identification interval; see the <a href="spec.html#open">open items</a>` : '') + (t.demoKey && t.frame.tag_kind === 3 ? '<br><span class="pill">demo key</span> not a published test key' : '');
     }
     function setView(id) {
       st.view = id; tabs.set(id);

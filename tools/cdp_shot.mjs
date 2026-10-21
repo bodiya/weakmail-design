@@ -45,8 +45,8 @@ if (V) {
   await send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });   // mobile:true alone leaves maxTouchPoints 0
   await send('Emulation.setUserAgentOverride', { userAgent: IPHONE_UA, acceptLanguage: 'en-US', platform: 'iPhone' });
 }
-await send('Page.navigate', { url: `http://localhost:8765/#${hash}` });
-for (let i = 0; i < 60 && !(await evaluate('window.app && window.app.ready')); i++) await sleep(250);
+await send('Page.navigate', { url: hash.startsWith('/') ? `http://localhost:8765${hash}` : `http://localhost:8765/#${hash}` });   // a leading / is a path (spec.html), else a route
+for (let i = 0; i < 60 && !hash.startsWith('/') && !(await evaluate('window.app && window.app.ready')); i++) await sleep(250);
 await sleep(800);
 if (js) { console.log('eval →', await evaluate(js)); await sleep(800); }
 const m = JSON.parse(await evaluate(`JSON.stringify({w:document.documentElement.clientWidth,h:document.documentElement.clientHeight,sw:document.documentElement.scrollWidth,sh:document.documentElement.scrollHeight,dpr:devicePixelRatio,back:Math.min(devicePixelRatio||1,2)})`));

@@ -44,7 +44,7 @@ export function rxPanel(parent, app, { autoRun = true, onChange = null } = {}) {
   const s = app.scenario;
   const preset = select(box, { label: 'scenario', options: [...Object.entries(SCENARIOS).map(([k, v]) => [k, v.label]), ['custom', 'custom']], value: matchPreset(app), onchange: v => { if (v === 'custom') return; app.setScenario({ ...SCENARIOS[v] }); sync(); changed(); } });
   const cls = select(box, { label: 'waveform class', options: [['WEAK', 'WEAK, 0.5 s symbols, 6 bit/s'], ['WEAK-X', 'WEAK-X, 1 s symbols, 3 bit/s'], ['MOBILE', 'MOBILE, 0.125 s symbols, 24 bit/s']], value: s.cls, onchange: v => { app.setScenario({ cls: v }); changed(); } });
-  const cn0 = slider(box, { label: 'C/N0 at the mailbox', min: 6, max: 40, step: 0.5, value: s.cn0, fmt: v => `${v} dB-Hz (${(v - 169).toFixed(0)} dBm)`, oninput: v => { app.setScenario({ cn0: v }); changed(); } });
+  const cn0 = slider(box, { label: 'C/N0 at the mailbox', min: 6, max: 40, step: 0.5, value: s.cn0, fmt: v => `${v} dB-Hz (${(v - 169).toFixed(0)} dBm at 5 dB NF)`, oninput: v => { app.setScenario({ cn0: v }); changed(); } });
   const off = slider(box, { label: 'carrier offset', min: -2400, max: 2400, step: 0.1, value: s.offset, fmt: v => `${v.toFixed(1)} Hz`, oninput: v => { app.setScenario({ offset: v }); changed(); } });
   const dr = slider(box, { label: 'carrier drift', min: -10, max: 10, step: 0.05, value: s.drift, fmt: v => `${v.toFixed(2)} Hz/s`, oninput: v => { app.setScenario({ drift: v }); changed(); } });
   const seed = slider(box, { label: 'noise seed', min: 1, max: 40, step: 1, value: s.seed, fmt: v => String(v), oninput: v => { app.setScenario({ seed: v }); changed(); } });

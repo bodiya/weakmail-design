@@ -13,7 +13,7 @@ export default {
 <p class="blurb">This site is the public description of the mode. The <a href="spec.html" class="inl">specification</a> defines everything that goes on the air, normatively, down to the parity-check matrices and test vectors. The other pages run a JavaScript port of the reference implementation in your browser, so every number on them is computed, not quoted: type a message and watch it become tones, then watch the mailbox's receiver find, track, demodulate and decode it.</p>
 <div class="panel" style="max-width:900px;margin-bottom:14px">
 <h3>status</h3>
-<p class="note" style="max-width:none">Draft v1 of the on-air format, published before any on-air use. The reference implementation (<a class="inl" href="https://github.com/bodiya/weakmail">weakmail</a>, Python) has been tested only against simulated signals; hardware tests come next. The specification here is frozen per version: a change to anything that goes on the air gets a new version number.</p>
+<p class="note" style="max-width:none">Draft v1 of the on-air format, published before any on-air use. The reference implementation (<a class="inl" href="https://github.com/bodiya/weakmail">weakmail</a>, Python) has been tested only against simulated signals; hardware tests come next. The specification here is frozen per version: a change to anything that goes on the air gets a new version number. Three <a class="inl" href="spec.html#open">open items</a> (key-ups longer than 10 minutes, identification of sending stations, the BEACON waveform) are to be settled before those parts are used on the air.</p>
 </div>
 
 <h2>One message, end to end</h2>

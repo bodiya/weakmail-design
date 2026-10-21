@@ -89,6 +89,10 @@ for w in CLASSES.values():
     o = np.argsort(f); f, P = f[o], P[o]; c = np.cumsum(P) / P.sum()
     obw.append(max(-f[np.searchsorted(c, 0.005)], f[np.searchsorted(c, 0.995)]))
 index = json.loads((WM / "vectors" / "index.json").read_text())
+long_keyups = ", ".join(
+    f"{w.name} n &ge; {min(n for n in coded.SIZE_CLASSES if coded.airtime_for_length(n, w) > 600)}"
+    f" ({coded.airtime_for_length(min(n for n in coded.SIZE_CLASSES if coded.airtime_for_length(n, w) > 600), w) / 60:.1f} min and more)"
+    for w in CLASSES.values() if any(coded.airtime_for_length(n, w) > 600 for n in coded.SIZE_CLASSES))
 vec_rows = "".join(
     f'<tr><td><a href="data/vectors/{html.escape(f)}">{html.escape(f)}</a></td><td><code>{h}</code></td></tr>'
     for f, h in sorted(index.get("sha256", {}).items()))
@@ -102,7 +106,7 @@ subs = {
     "DEV_MIN": f"{BETA * TONES_HZ[0]:.0f}", "DEV_MAX": f"{dev_max:.0f}",
     "OBW_MAX": f"{4 * f7 / 1000:.2f}", "BN": f"{bn / 1000:.1f}", "BN_DESIG": desig(bn),
     "TONE_ROWS": tone_rows, "CLASS_ROWS": cls_rows, "VEC_ROWS": vec_rows,
-    "TX_DELAY": f"{TX_DELAY_S:g}", "BETA": f"{BETA:g}",
+    "TX_DELAY": f"{TX_DELAY_S:g}", "BETA": f"{BETA:g}", "LONG_KEYUPS": long_keyups,
     "OBW_MEAS": f"±{max(obw) / 1000:.2f} kHz ({2 * max(obw) / 1000:.2f} kHz)", "PREAMBLE_LEN": str(PREAMBLE_LEN),
 }
 

@@ -37,6 +37,28 @@
   GPL-3.0 (only?) while weakmail is GPL-3.0-or-later. Probably fine (an algorithm reimplemented
   from its description), but worth a look.
 
+- **Key-ups longer than 10 minutes** (found by the Gemini review): WEAK frames of class 4302 and
+  5322 (12-15 min) and WEAK-X frames of class 2394 and up (13-30 min) outlast the §97.119(a)
+  10-minute identification interval, and the header callsign cannot be decoded before the frame
+  ends. The spec page lists this as an open item and says not to send such frames until v1 defines
+  an identification for them; the encode page warns. Options for weakmail: cap the key-up at
+  10 minutes per class, or define an in-burst or between-burst CW ID.
+- **Protocol ambiguities** (Gemini review, worth a sentence each in SPEC.md): whether a RESPONSE
+  or a delivery ACK may really be addressed to ANY (4.1 says yes, 4.16 says the mailbox call,
+  and a second mailbox hearing it would log bad-sig); that the frag byte of 4.7 is present even
+  on a single-fragment DELIVER or relayed SUBMIT; that an envelope's blob length comes from its
+  header, with the pad bits of the last byte checked zero; and that every mailbox hearing a
+  SUBMIT, KEY or SIG acts on it and ACKs (intended?).
+
+## Independent review
+
+The specification and the pages' text were reviewed by Gemini 4 (google/gemini-4-argon, via
+OpenRouter) on 2026-10-21. Taken up: the open items above, the §97.219 and BEACON-frame wording
+in Appendix R, the note on the proposed VHF/UHF symbol-rate change, the noise-figure label on
+the C/N0 slider, and two wording fixes. Not taken up: its claim that the FCC has already removed
+the 2 m and 70 cm symbol-rate limits (FCC 23-93 removed them on HF; for VHF/UHF it only proposed
+it, and the design doc records them as in force in October 2026).
+
 ## Loose ends
 
 - Encoding a frame in the 4302 or 5322 class builds that LDPC code on the main thread the first

@@ -25,7 +25,7 @@ export default {
     cap.set('is not used on this page.', 'that the decoded frame is bit for bit the one encoded on E · Encode, and the verification result of its tag.');
     const rp = rxPanel(ctl, app); st.unsubs.push(rp.dispose);
     tryThis(main, [
-      { label: 'send it signed', see: 'Ed25519 with the test key of K1ABC: the receiver looks up K1ABC\'s public key and the signature verifies. 2.7 times the airtime, the same C/N0 threshold.', run: () => { app.setMsg({ tag: 'ed25519' }); rp.describe(); app.ensureRx(); } },
+      { label: 'send it signed', see: 'Ed25519 with the test key of K1ABC: the receiver looks up K1ABC\'s public key and the signature verifies. About 2.6 times the key-up time, and in simulation about the same C/N0 threshold.', run: () => { app.setMsg({ tag: 'ed25519' }); rp.describe(); app.ensureRx(); } },
       { label: 'HMAC tag', see: 'Verified with the published test group key.', run: () => { app.setMsg({ tag: 'hmac' }); rp.describe(); app.ensureRx(); } },
       { label: 'unsigned', see: 'Stored by a mailbox as UNVERIFIED + UNSIGNED, subject to the per-addressee quota for unverified mail.', run: () => { app.setMsg({ tag: 'none' }); rp.describe(); app.ensureRx(); } },
     ]);
