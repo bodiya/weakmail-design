@@ -31,6 +31,7 @@
 <tr><td>character encodings</td><td>callsigns: FT8 "c28" packing; text: a published 64-character 6-bit alphabet, or UTF-8</td><td>2.3, 2.4</td></tr>
 <tr><td>error correction</td><td>rate-½ (3,6)-regular LDPC code, 13 published lengths from 216 to 5322 bits, deterministic construction and interleaver (Appendix A)</td><td>3, A</td></tr>
 <tr><td>authentication</td><td>none, HMAC-SHA256 truncated to 64 bits, or Ed25519 (RFC 8032) over published canonical bytes; no encryption of any kind</td><td>0, 5</td></tr>
+<tr><td>key trust</td><td>an Ed25519 key counts for a callsign only through a LoTW key binding: the key signed off air with the station's ARRL Logbook of the World callsign certificate, verified to the LoTW root; there is no over-the-air key announcement</td><td>4.10</td></tr>
 <tr><td>station identification</td><td>the source callsign is in every frame header; mailboxes also identify in CW (≤ 20 wpm) at least every 10 minutes</td><td>2.3, 4.12, R</td></tr>
 <tr><td>downlink (mailbox → HT)</td><td>Bell 202 AFSK at 1200 Bd in AX.25 UI frames (default), or the uplink MFSK burst</td><td>7</td></tr>
 <tr><td>other waveforms</td><td>BEACON: on-off keying of the bare carrier at 1 Bd</td><td>1.4</td></tr>

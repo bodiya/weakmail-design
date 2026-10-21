@@ -14,6 +14,7 @@ import { splitmix64, mixKey, hex64, DOMAIN_CODE, DOMAIN_ILV, LDPCCode } from '..
 import * as coded from '../src/wm/coded.js';
 import * as mfsk from '../src/wm/mfsk.js';
 import { CLASSES, TX_DELAY_S, PREAMBLE_LEN } from '../src/wm/params.js';
+import { bindingPayload } from '../src/wm/lotw.js';
 
 const QUICK = process.argv.includes('--quick');
 const dir = new URL('../data/vectors/', import.meta.url);
@@ -104,8 +105,12 @@ for (const ent of index.frames) {
   console.log(`${ent.name}: n=${n} ok`);
 }
 
+// --- LoTW binding payload (SPEC 4.10): weakmail.lotw.binding_payload("K1ABC", pk, 1739900000) ---
+ok(hex(bindingPayload('K1ABC', unhex(keys.ed25519.K1ABC.pk), 1739900000)) ===
+  '574d312d4c4f545701054b3141424303a107bff3ce10be1d70dd18e74bc09967e4d6309ba50d5f1ddc8664125531b80000000067b4c460', 'LoTW binding payload');
+
 // --- reference waveforms (SPEC 1.8) ---
-const wf = J('waveforms.json'), sv = J('frame-05-submit-ed25519.json');
+const wf = J('waveforms.json'), sv = J('frame-03-submit-ed25519.json');
 const q16 = x => Math.round(Math.max(-1, Math.min(1, x)) * 32767);
 // numpy rounds half to even; Math.round rounds half up. The vectors were made with np.round.
 const q16e = x => { const y = Math.max(-1, Math.min(1, x)) * 32767, r = Math.round(y); return (r - y === 0.5 && (r & 1)) ? r - 1 : r; };

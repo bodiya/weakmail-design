@@ -241,7 +241,7 @@ await go('protocol/session'); await sleep(1200); await play(800); await canvasCl
 for (let i = 0; i < 3; i++) { console.log(' tab', await tab(i)); await sleep(200); }
 await sel(0, 'MOBILE'); await sel(1, 'MOBILE'); await tab(0);
 console.log('protocol ok');
-await go('downlink'); await sleep(800); await play(500); await sel(0, 'frame-12-deliver.json'); await sleep(500); await play(400);
+await go('downlink'); await sleep(800); await play(500); await sel(0, 'frame-10-deliver.json'); await sleep(500); await play(400);
 console.log('downlink ok');
 await go('home');
 if (M) {

@@ -52,7 +52,7 @@ export default {
 <li><a href="#preamble">2 · Preamble</a>: no time slots, so the receiver slides each class's 8-tone pattern over the de-chirped record and scores it as a z-statistic.</li>
 <li><a href="#soft">3 · Soft bits</a>: four lines per tone, eight tones per symbol, three bits per symbol. The tone grid is where you can see the message.</li>
 <li><a href="#decode">4 · LDPC</a>: normalised min-sum, 60 iterations at most. The frame length is not on the air: every plausible size class is tried until one passes LDPC, CRC and the frame's own length check.</li>
-<li><a href="#protocol/session">P · Mailbox</a>: announce a key, submit, query, answer the challenge, receive the delivery. Every frame is from the published test vectors.</li>
+<li><a href="#protocol/session">P · Mailbox</a>: keys bound off air with LoTW, then submit, query, answer the challenge, receive the delivery. Every frame is from the published test vectors.</li>
 </ol>
 
 <h2>The numbers</h2>

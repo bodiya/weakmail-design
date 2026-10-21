@@ -1,6 +1,6 @@
 {
 "name": "mobile-ack",
-"vector": "frame-07-ack-mailbox.json",
+"vector": "frame-05-ack-mailbox.json",
 "class": "MOBILE",
 "cn0_dbhz": 23.0,
 "offset_hz": -1488.2,

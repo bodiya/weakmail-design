@@ -81,7 +81,7 @@ cls_rows = "".join(
 # measured occupied bandwidth of the reference waveform of the signed 32-character vector
 from scipy.signal import welch  # noqa: E402
 from weakmail import mfsk  # noqa: E402
-v5 = json.loads((WM / "vectors" / "frame-05-submit-ed25519.json").read_text())
+v5 = json.loads((WM / "vectors" / "frame-03-submit-ed25519.json").read_text())
 obw = []
 for w in CLASSES.values():
     x = mfsk.iq(np.array([int(c) for c in v5["tones"][w.name]["sequence"]]), w, tx_delay_s=0.0)

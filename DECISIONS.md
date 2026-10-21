@@ -20,6 +20,13 @@
   D = β·M = 3630 Hz. Classed F (frequency modulation) because the transmitter is an FM handheld,
   although with its pre-emphasis the result is phase modulation.
 
+- **LoTW key bindings (weakmail `46f33ab`).** Key trust is now only through LoTW bindings; KEY
+  frames, TOFU, the operator directory and `wmkey:` cards are gone. The protocol page shows the
+  binding payload (`src/wm/lotw.js`, checked against `weakmail.lotw.binding_payload` in
+  `tools/vectors_test.mjs`) but not a signature: that needs a LoTW callsign certificate, and
+  there is no public test one. `data/vectors/` and `tools/fixtures/` follow the renumbered
+  vectors; the fixture captures are byte-identical to the previous ones.
+
 ## Possible issues in weakmail found while building this (not changed here)
 
 - **Station identification of a sending handheld.** SPEC 2.3 treats the c28 source callsign in

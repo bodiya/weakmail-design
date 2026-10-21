@@ -66,98 +66,84 @@
  },
  "frames": [
   {
-   "file": "frame-01-key-k1abc.json",
-   "name": "key-k1abc",
-   "type": "KEY",
-   "n": 1752,
-   "msg_id": "a94387f1538a0086"
-  },
-  {
-   "file": "frame-02-key-w9xyz.json",
-   "name": "key-w9xyz",
-   "type": "KEY",
-   "n": 1752,
-   "msg_id": "647359bb762f0c2b"
-  },
-  {
-   "file": "frame-03-submit-unsigned.json",
+   "file": "frame-01-submit-unsigned.json",
    "name": "submit-unsigned",
    "type": "SUBMIT",
    "n": 600,
    "msg_id": "dd8e10c136d0f10f"
   },
   {
-   "file": "frame-04-submit-hmac.json",
+   "file": "frame-02-submit-hmac.json",
    "name": "submit-hmac",
    "type": "SUBMIT",
    "n": 732,
    "msg_id": "c48e95bdc691fef4"
   },
   {
-   "file": "frame-05-submit-ed25519.json",
+   "file": "frame-03-submit-ed25519.json",
    "name": "submit-ed25519",
    "type": "SUBMIT",
    "n": 1626,
    "msg_id": "74128ce157fff417"
   },
   {
-   "file": "frame-06-submit-utf8-ed25519.json",
+   "file": "frame-04-submit-utf8-ed25519.json",
    "name": "submit-utf8-ed25519",
    "type": "SUBMIT",
    "n": 1752,
    "msg_id": "26be8f7b6cd3b995"
   },
   {
-   "file": "frame-07-ack-mailbox.json",
+   "file": "frame-05-ack-mailbox.json",
    "name": "ack-mailbox",
    "type": "ACK",
    "n": 1368,
    "msg_id": "32af56f49e3f688a"
   },
   {
-   "file": "frame-08-query.json",
+   "file": "frame-06-query.json",
    "name": "query",
    "type": "QUERY",
    "n": 216,
    "msg_id": "5ccaa0371a035c98"
   },
   {
-   "file": "frame-09-list.json",
+   "file": "frame-07-list.json",
    "name": "list",
    "type": "LIST",
    "n": 1626,
-   "msg_id": "1b75f85f55a50a3a"
+   "msg_id": "58527d3e9a61dfff"
   },
   {
-   "file": "frame-10-challenge.json",
+   "file": "frame-08-challenge.json",
    "name": "challenge",
    "type": "CHALLENGE",
    "n": 1626,
    "msg_id": "b1d11c9c526626a2"
   },
   {
-   "file": "frame-11-response.json",
+   "file": "frame-09-response.json",
    "name": "response",
    "type": "RESPONSE",
    "n": 1368,
    "msg_id": "c7d794b89bbde6c7"
   },
   {
-   "file": "frame-12-deliver.json",
+   "file": "frame-10-deliver.json",
    "name": "deliver",
    "type": "DELIVER",
    "n": 3276,
-   "msg_id": "f3b06728ab74ea86"
+   "msg_id": "78a26ef1f9c4a36e"
   },
   {
-   "file": "frame-13-ack-recipient.json",
+   "file": "frame-11-ack-recipient.json",
    "name": "ack-recipient",
    "type": "ACK",
    "n": 1368,
    "msg_id": "c5f80c2197ce08eb"
   },
   {
-   "file": "frame-14-beacon.json",
+   "file": "frame-12-beacon.json",
    "name": "beacon",
    "type": "BEACON",
    "n": 1368,
@@ -165,21 +151,19 @@
   }
  ],
  "sha256": {
-  "frame-01-key-k1abc.json": "985994e4e5c5081317bb4e3225e8d973e62cb5d6a17e01ab3baeb91d92edc360",
-  "frame-02-key-w9xyz.json": "cb3b4162aa75691f70bdff73b2f072d43088ad6c1ae26f888980ae6959cc66a3",
-  "frame-03-submit-unsigned.json": "a9536a044721d640f0eb7b704686108a03940164eb10adfd0283f8294cbd5840",
-  "frame-04-submit-hmac.json": "6325dde89af1afc26fcbf2423689c5e582312c5992136c1531dfd0819b33041d",
-  "frame-05-submit-ed25519.json": "bdbd7e96b1a763189ac9807236055188c99bba5766bdba3a122f1e69f00ea655",
-  "frame-06-submit-utf8-ed25519.json": "de7cedb9bc7d3265ff55fd326d74b85727278bbdb6799794f62f8e59ce71d69b",
-  "frame-07-ack-mailbox.json": "04ba7cf7357760d4488bb77941a5fe43c287cf0a9637347c06f8be81391c49ac",
-  "frame-08-query.json": "ca448cf5a829e4e8857ba67013b3642f9cd7de15d9788d78756c5d79959c3b20",
-  "frame-09-list.json": "df8b1e9f26c27a2a164e3d19cc739f515d4fba5b65c41639f81978dd4724ef2b",
-  "frame-10-challenge.json": "44d7e2986a1aeed5bb784e011d85582f8ff4deb4403d909c7268f76a0dd7617b",
-  "frame-11-response.json": "6467c5c6004518039d2bbc9909e66caea918b332ddbc89c62c9162789631115a",
-  "frame-12-deliver.json": "8f675f602412eed486aebc1ce2fbb0dd83886fdf4ef72eee102dd8eb7d7ae22e",
-  "frame-13-ack-recipient.json": "378a29531e85434a9a7a31a17de7ffacb11c21c24fbef05f569c3ad1221fe3e0",
-  "frame-14-beacon.json": "0d20837c398891d84b1907847097b17c6a0b40f10a54d9403dd45ab5c979da9d",
-  "keys.json": "31ae57aefeea06d70470a9fcbec97c36d7f545f6829ee83ed348d5200c35ac90",
+  "frame-01-submit-unsigned.json": "a9536a044721d640f0eb7b704686108a03940164eb10adfd0283f8294cbd5840",
+  "frame-02-submit-hmac.json": "6325dde89af1afc26fcbf2423689c5e582312c5992136c1531dfd0819b33041d",
+  "frame-03-submit-ed25519.json": "bdbd7e96b1a763189ac9807236055188c99bba5766bdba3a122f1e69f00ea655",
+  "frame-04-submit-utf8-ed25519.json": "de7cedb9bc7d3265ff55fd326d74b85727278bbdb6799794f62f8e59ce71d69b",
+  "frame-05-ack-mailbox.json": "04ba7cf7357760d4488bb77941a5fe43c287cf0a9637347c06f8be81391c49ac",
+  "frame-06-query.json": "ca448cf5a829e4e8857ba67013b3642f9cd7de15d9788d78756c5d79959c3b20",
+  "frame-07-list.json": "5726b60a55b6375b3468e532f3b5047b06707a5caa1486ad1b08e2963beca2b0",
+  "frame-08-challenge.json": "44d7e2986a1aeed5bb784e011d85582f8ff4deb4403d909c7268f76a0dd7617b",
+  "frame-09-response.json": "6467c5c6004518039d2bbc9909e66caea918b332ddbc89c62c9162789631115a",
+  "frame-10-deliver.json": "7d20a0b3f490bb35ccb45660ace4aadc6bd40bad3eca60df30a01b93c77289aa",
+  "frame-11-ack-recipient.json": "378a29531e85434a9a7a31a17de7ffacb11c21c24fbef05f569c3ad1221fe3e0",
+  "frame-12-beacon.json": "0d20837c398891d84b1907847097b17c6a0b40f10a54d9403dd45ab5c979da9d",
+  "keys.json": "5cf1eea8f79381de5b2b8bccffdd6c97b4ce8fb560ebad55f0c81f2143d6c43b",
   "waveforms.json": "52354963bef0b04f187a226cc00c0d19339541b58b74f73567f6d4dd27360153"
  }
 }
