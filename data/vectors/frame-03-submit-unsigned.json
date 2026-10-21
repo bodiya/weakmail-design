@@ -1,0 +1,69 @@
+{
+ "format": "weakmail-test-vector",
+ "format_version": 1,
+ "name": "submit-unsigned",
+ "description": "SUBMIT K1ABC -> W9XYZ, the SPEC section 6 frame, unsigned (32-char 6-bit baseline, class 600)",
+ "frame": {
+  "version": 1,
+  "type": "SUBMIT",
+  "type_code": 0,
+  "tag_kind": "NONE",
+  "tag_kind_code": 0,
+  "src": "K1ABC",
+  "src_c28": 10214965,
+  "dst": "W9XYZ",
+  "dst_c28": 12751800,
+  "timestamp_min": 33088,
+  "relayed": false,
+  "more_follows": false,
+  "body_kind": "TEXT6",
+  "body_len": 32,
+  "body": "MEET AT THE REPEATER 1800 LOCAL.",
+  "body_encoding": "text"
+ },
+ "body_fields": {},
+ "auth": {
+  "kind": "none"
+ },
+ "canonical_bytes": "574d314009bde350c293b8814002034515400150050814048540505415201c8db6c030f0c13250",
+ "tag": "",
+ "msg_id": "dd8e10c136d0f10f",
+ "crc16": "5b7f",
+ "info_bits": {
+  "length": 300,
+  "hex": "4009bde350c293b8814002034515400150050814048540505415201c8db6c030f0c13255b7f0"
+ },
+ "size_class": {
+  "n": 600,
+  "k": 300,
+  "pad_bits": 0
+ },
+ "coded_bits": {
+  "length": 600,
+  "hex": "7206300ed040006b1c952a628bf283590803853c459e46c49a4826a90a8b211d074c2e5280108006623d9f2e1b4bdb889583f42c00c01a500e823526d182101a0bf31c97163124a3368e68",
+  "sha256": "99f8baf191819a783768a496d0c52a0e6ddd7acb8f2af9c787acbc6453c8d76f"
+ },
+ "tones": {
+  "WEAK": {
+   "symbol_s": 0.5,
+   "preamble": "05274163",
+   "n_symbols": 208,
+   "airtime_s": 104.4,
+   "sequence": "0527416327702040026601000004672776336173735513023430700271324106757722077477707463306312103147053203513370010300017410567543502233566410762015471200020004760014707237744720103004706542051127341733337216605160"
+  },
+  "WEAK-X": {
+   "symbol_s": 1.0,
+   "preamble": "36147250",
+   "n_symbols": 208,
+   "airtime_s": 208.4,
+   "sequence": "3614725027702040026601000004672776336173735513023430700271324106757722077477707463306312103147053203513370010300017410567543502233566410762015471200020004760014707237744720103004706542051127341733337216605160"
+  },
+  "MOBILE": {
+   "symbol_s": 0.125,
+   "preamble": "72413605",
+   "n_symbols": 208,
+   "airtime_s": 26.4,
+   "sequence": "7241360527702040026601000004672776336173735513023430700271324106757722077477707463306312103147053203513370010300017410567543502233566410762015471200020004760014707237744720103004706542051127341733337216605160"
+  }
+ }
+}

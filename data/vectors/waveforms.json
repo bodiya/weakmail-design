@@ -1,0 +1,332 @@
+{
+ "format": "weakmail-reference-waveforms",
+ "format_version": 1,
+ "vector": "submit-ed25519",
+ "window_s": 2.0,
+ "synthesis": {
+  "iq": "mfsk.iq(tones, wc, beta=1.5, fs=24000, tx_delay_s=0.4): exp(j*beta*sin(psi)), 0.4 s of unmodulated carrier first (SPEC 1.8)",
+  "audio": "mfsk.audio(tones, wc, fs=48000, amplitude=0.4, tx_delay_s=0.4): 0.4 s of silence, 10-ms raised-cosine ramp (SPEC 1.8)",
+  "quantisation": "int16 = round(clip(x, -1, 1) * 32767); IQ interleaved I, Q; sha256 over the little-endian int16 bytes of the window",
+  "windows": "head = [0, 2 s); data = 2 s from TX delay + 8 preamble symbols"
+ },
+ "classes": {
+  "WEAK": {
+   "iq": {
+    "fs": 24000,
+    "windows": {
+     "head": {
+      "start_sample": 0,
+      "sha256": "fb846dbec0037f88012202b78b332105ec11cc0b263c2d8176712a8e06e3c3b5",
+      "n": 48000,
+      "i_sum": 958569928,
+      "q_sum": 0,
+      "power_sum": 51536488660120,
+      "rms": 1.0000002598947964,
+      "first": [
+       [
+        32767,
+        0
+       ],
+       [
+        32767,
+        0
+       ],
+       [
+        32767,
+        0
+       ],
+       [
+        32767,
+        0
+       ]
+      ]
+     },
+     "data": {
+      "start_sample": 105600,
+      "sha256": "4a32bf0406d67d4cb6368aa16ad554b15d2509c0045d0bf26f21b3104b01a637",
+      "n": 48000,
+      "i_sum": 805009040,
+      "q_sum": 0,
+      "power_sum": 51536472196000,
+      "rms": 1.0000001001620902,
+      "first": [
+       [
+        32767,
+        0
+       ],
+       [
+        26720,
+        18966
+       ],
+       [
+        14123,
+        29567
+       ],
+       [
+        4479,
+        32460
+       ]
+      ]
+     }
+    }
+   },
+   "audio": {
+    "fs": 48000,
+    "windows": {
+     "head": {
+      "start_sample": 0,
+      "sha256": "c3bc6b09a1bfada6e0eeff5e658d0233794b7e3497c878e62a6518e615f038dd",
+      "n": 96000,
+      "sum": -76945,
+      "power_sum": 6570920434079,
+      "min": -13107,
+      "max": 13107,
+      "rms": 0.25248803740105763,
+      "first": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     "data": {
+      "start_sample": 211200,
+      "sha256": "931d4c5ebdc87a516609e2e41234d1eb13cdf26dcc5010095afe6dcf7ddf92f6",
+      "n": 96000,
+      "sum": 0,
+      "power_sum": 8245800257600,
+      "min": -13107,
+      "max": 13107,
+      "rms": 0.2828421354934594,
+      "first": [
+       0,
+       2759,
+       5394,
+       7787,
+       9832,
+       11436,
+       12527,
+       13058
+      ]
+     }
+    }
+   }
+  },
+  "WEAK-X": {
+   "iq": {
+    "fs": 24000,
+    "windows": {
+     "head": {
+      "start_sample": 0,
+      "sha256": "7dcc0fd518475a2e35b9347633a2f8f0b70459188159b288afe116a4af6a6cfe",
+      "n": 48000,
+      "i_sum": 958571328,
+      "q_sum": 0,
+      "power_sum": 51536493806720,
+      "rms": 1.000000309826421,
+      "first": [
+       [
+        32767,
+        0
+       ],
+       [
+        32767,
+        0
+       ],
+       [
+        32767,
+        0
+       ],
+       [
+        32767,
+        0
+       ]
+      ]
+     },
+     "data": {
+      "start_sample": 201600,
+      "sha256": "5cf3c71bd5529e53b09d2b7df5842cd2663b336745a35acec6a42442f51116e4",
+      "n": 48000,
+      "i_sum": 805009680,
+      "q_sum": 0,
+      "power_sum": 51536523360000,
+      "rms": 1.000000596548341,
+      "first": [
+       [
+        32767,
+        0
+       ],
+       [
+        26720,
+        18966
+       ],
+       [
+        14123,
+        29567
+       ],
+       [
+        4479,
+        32460
+       ]
+      ]
+     }
+    }
+   },
+   "audio": {
+    "fs": 48000,
+    "windows": {
+     "head": {
+      "start_sample": 0,
+      "sha256": "e47cd581a638f1a77bd5481c89fcb2969e44fe96e0f8e9cbf90588fb1da1ca18",
+      "n": 96000,
+      "sum": -56026,
+      "power_sum": 6570921439578,
+      "min": -13107,
+      "max": 13107,
+      "rms": 0.2524880567192386,
+      "first": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     "data": {
+      "start_sample": 403200,
+      "sha256": "37b8a153bcdde604c1122c10f57b8fff98f4b26411b707d2b10a019e155d2cf9",
+      "n": 96000,
+      "sum": 0,
+      "power_sum": 8245799768400,
+      "min": -13107,
+      "max": 13107,
+      "rms": 0.28284212710334744,
+      "first": [
+       0,
+       2759,
+       5394,
+       7787,
+       9832,
+       11436,
+       12527,
+       13058
+      ]
+     }
+    }
+   }
+  },
+  "MOBILE": {
+   "iq": {
+    "fs": 24000,
+    "windows": {
+     "head": {
+      "start_sample": 0,
+      "sha256": "25e475444fa6e910ab5a3243267678c14181e72fc40f5052d00fcbc404eede12",
+      "n": 48000,
+      "i_sum": 958570698,
+      "q_sum": 11212,
+      "power_sum": 51536485121470,
+      "rms": 1.000000225563286,
+      "first": [
+       [
+        32767,
+        0
+       ],
+       [
+        32767,
+        0
+       ],
+       [
+        32767,
+        0
+       ],
+       [
+        32767,
+        0
+       ]
+      ]
+     },
+     "data": {
+      "start_sample": 33600,
+      "sha256": "217a2f2fa802824ebde5a771aa8ea507d7475ce0851416afaab143685369d092",
+      "n": 48000,
+      "i_sum": 805009680,
+      "q_sum": -58800,
+      "power_sum": 51536493388700,
+      "rms": 1.0000003057708469,
+      "first": [
+       [
+        32767,
+        0
+       ],
+       [
+        26720,
+        18966
+       ],
+       [
+        14123,
+        29567
+       ],
+       [
+        4479,
+        32460
+       ]
+      ]
+     }
+    }
+   },
+   "audio": {
+    "fs": 48000,
+    "windows": {
+     "head": {
+      "start_sample": 0,
+      "sha256": "bed1eb0917e5e6837c2df0cb364cabc5b9e67702ef5af6f531d9d68f471787dc",
+      "n": 96000,
+      "sum": -33287,
+      "power_sum": 6570919107791,
+      "min": -13107,
+      "max": 13107,
+      "rms": 0.2524880119197058,
+      "first": [
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0,
+       0
+      ]
+     },
+     "data": {
+      "start_sample": 67200,
+      "sha256": "bb2955e633d5ff1aaf0b9442e897f491392ca65a4da6c82d039e293f19afa523",
+      "n": 96000,
+      "sum": -39678,
+      "power_sum": 8245804176650,
+      "min": -13107,
+      "max": 13107,
+      "rms": 0.2828422027078173,
+      "first": [
+       0,
+       2759,
+       5394,
+       7787,
+       9832,
+       11436,
+       12527,
+       13058
+      ]
+     }
+    }
+   }
+  }
+ }
+}
